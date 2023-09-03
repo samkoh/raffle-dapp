@@ -4,7 +4,7 @@ import { Box, Spinner, Text } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { Tooltip } from "@chakra-ui/react";
 
-export default function withdrawBalance() {
+export default function WithdrawBalance() {
     const { contract } = useContract(LOTTERY_CONTRACT_ADDRESS);
     const address = useAddress();
 

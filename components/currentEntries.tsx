@@ -3,7 +3,7 @@ import { LOTTERY_CONTRACT_ADDRESS } from "../const/addresses";
 import { Container, Spinner } from "@chakra-ui/react";
 import EntryCard from "./entryCard";
 
-export default function currentEntries() {
+export default function CurrentEntries() {
 
     const { contract } = useContract(LOTTERY_CONTRACT_ADDRESS);
 

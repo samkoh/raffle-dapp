@@ -46,17 +46,6 @@ export default function RaffleNFTTransfer({ nftContractAddress, tokenId }: Props
                 </Box>
             </Flex>
 
-            {/* <Web3Button
-                        contractAddress={LOTTERY_CONTRACT_ADDRESS}
-                        action={async () => {
-                            await prizeNftContract?.setApprovalForToken(
-                                LOTTERY_CONTRACT_ADDRESS,
-                                tokenId
-                            );
-                            await contract?.call("pickWinner");
-                        }}
-                        isDisabled={lotteryStatus}
-                    >Select Winner</Web3Button> */}
             {!isLoadingAdmin && address === admin ? (
 
                 <Web3Button
