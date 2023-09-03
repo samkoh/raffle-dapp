@@ -1,14 +1,19 @@
-import { Web3Button, useContract, useContractRead } from "@thirdweb-dev/react";
+import { Web3Button, useContract, useContractRead, useAddress } from "@thirdweb-dev/react";
 import { LOTTERY_CONTRACT_ADDRESS } from "../const/addresses";
 import { useState } from "react";
 import { Box, Card, Input, Stack, Text } from "@chakra-ui/react";
 import RaffleStatus from "./raffleStatus";
-import AdminTicketPriceCard from "./adminTicketPrice";
+import { Tooltip } from "@chakra-ui/react";
 
 export default function AdminRaffleStatusCard() {
     const { contract } = useContract(LOTTERY_CONTRACT_ADDRESS);
+    const address = useAddress();
 
-    const { data: lotteryStatus } = useContractRead(contract, "lotteryStatus")
+    const { data: lotteryStatus } = useContractRead(contract, "lotteryStatus");
+    const {
+        data: admin,
+        isLoading: isLoadingAdmin
+    } = useContractRead(contract, "admin");
 
     const [contractAddress, setContractAddress] = useState("");
     const [tokenId, setTokenId] = useState(0);
@@ -43,7 +48,7 @@ export default function AdminRaffleStatusCard() {
                             onChange={(e) => setTokenId(parseInt(e.target.value))}
                         />
                     </Box>
-                    <Web3Button
+                    {/* <Web3Button
                         contractAddress={LOTTERY_CONTRACT_ADDRESS}
                         action={(contract) => contract.call(
                             "startLottery", [
@@ -52,16 +57,54 @@ export default function AdminRaffleStatusCard() {
                         ]
                         )}
                         onSuccess={reset}
-                    >Start Raffle</Web3Button>
+                    >Start Raffle</Web3Button> */}
+                    {!isLoadingAdmin && address === admin ? (
+                        <Web3Button
+                            contractAddress={LOTTERY_CONTRACT_ADDRESS}
+                            action={(contract) => contract.call(
+                                "startLottery", [
+                                contractAddress,
+                                tokenId
+                            ]
+                            )}
+                            onSuccess={reset}
+                        >Start Raffle</Web3Button>
+                    ) : (
+                        <Tooltip label="Only admin can start the raffle" hasArrow>
+                            <div>
+                                <Web3Button
+                                    contractAddress={LOTTERY_CONTRACT_ADDRESS}
+                                    action={(contract) => contract.call(
+                                        "startLottery", [
+                                        contractAddress,
+                                        tokenId
+                                    ]
+                                    )}
+                                    onSuccess={reset}
+                                    isDisabled
+                                >Start Raffle</Web3Button>
+                            </div>
+                        </Tooltip>
+                    )}
                 </Stack>
             ) : (
                 <Stack spacing={4} mt={4}>
-                    <Web3Button
-                        contractAddress={LOTTERY_CONTRACT_ADDRESS}
-                        action={(contract) => contract.call(
-                            "endLottery"
-                        )}
-                    >End Raffle</Web3Button>
+                    {!isLoadingAdmin && address === admin ? (
+                        <Web3Button
+                            contractAddress={LOTTERY_CONTRACT_ADDRESS}
+                            action={(contract) => contract.call("endLottery")}
+                        >End Raffle</Web3Button>
+                    ) : (
+                        <Tooltip label="Only admin can end the raffle" hasArrow>
+                            <div>
+                                <Web3Button
+                                    contractAddress={LOTTERY_CONTRACT_ADDRESS}
+                                    action={(contract) => contract.call("endLottery")}
+                                    isDisabled
+                                >End Raffle</Web3Button>
+                            </div>
+                        </Tooltip>
+                    )}
                 </Stack>
             )}
         </Card>
